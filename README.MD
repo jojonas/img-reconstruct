@@ -40,7 +40,7 @@ Dependencies:
 Examples
 ========
 
-Here are some before / after comparisons of scanned diapositives.
+Here are some before / after comparisons of scanned diapositives.
 They were created with the following command: `python restore.py examples\*.jpg`
 
 ![before](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0840.JPG)
