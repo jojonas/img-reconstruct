@@ -40,12 +40,12 @@ Dependencies:
 Examples
 ========
 
-![before](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0840.JPG | width=100)
-![after](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0840_restored.JPG | width=100)
+![before](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0840.JPG)
+![after](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0840_restored.JPG)
 
-![before](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0921.JPG | width=100)
-![after](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0921_restored.JPG | width=100)
+![before](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0921.JPG)
+![after](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0921_restored.JPG)
 
-![before](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0972.JPG | width=100)
-![after](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0972_restored.JPG | width=100)
+![before](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0972.JPG)
+![after](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0972_restored.JPG)
 
