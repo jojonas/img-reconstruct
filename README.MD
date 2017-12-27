@@ -1,10 +1,11 @@
-IMG-Reconstruct
-===============
+Image-Restoration
+=================
 
 This script removes color tints from scans of aged negatives or diapositives.
 
 Usage:
-    usage: auto_reconstruction.py [-h] [--low LOW] [--high HIGH]
+
+    usage: restore.py [-h] [--low LOW] [--high HIGH]
                                   [--pad-low PAD_LOW] [--pad-high PAD_HIGH]
                                   [--invert] [--multiprocessing] [--out OUT]
                                   filename [filename ...]
@@ -31,21 +32,20 @@ Usage:
                             (default: None)
 
 Dependencies:
-
-    * [Python 3](https://www.python.org/)
-    * [Python Pillow Module](https://python-pillow.org/)
-    * [NumPy](http://www.numpy.org/)
-    * optional: [piexif](https://pypi.python.org/pypi/piexif)
+* [Python 3](https://www.python.org/)
+* [Python Pillow Module](https://python-pillow.org/)
+* [NumPy](http://www.numpy.org/)
+* optional: [piexif](https://pypi.python.org/pypi/piexif)
 
 Examples
 ========
 
-![before](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0840.JPG)
-![after](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0840_reconstructed.JPG)
+![before](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0840.JPG | width=100)
+![after](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0840_restored.JPG | width=100)
 
-![before](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0921.JPG)
-![after](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0921_reconstructed.JPG)
+![before](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0921.JPG | width=100)
+![after](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0921_restored.JPG | width=100)
 
-![before](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0972.JPG)
-![after](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0972_reconstructed.JPG)
+![before](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0972.JPG | width=100)
+![after](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0972_restored.JPG | width=100)
 
