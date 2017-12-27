@@ -37,3 +37,15 @@ Dependencies:
     * [NumPy](http://www.numpy.org/)
     * optional: [piexif](https://pypi.python.org/pypi/piexif)
 
+Examples
+========
+
+![before](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0840.JPG)
+![after](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0840_reconstructed.JPG)
+
+![before](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0921.JPG)
+![after](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0921_reconstructed.JPG)
+
+![before](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0972.JPG)
+![after](https://raw.githubusercontent.com/jojonas/img-reconstruct/master/examples/DSC_0972_reconstructed.JPG)
+
