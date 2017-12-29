@@ -17,10 +17,10 @@ def parse_args():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument("filename", help="File(s) to reconstruct.", nargs="+")
-    parser.add_argument("--low", help="Lower percentile to adjust curves to (0-1).", type=float, default=0.10)
-    parser.add_argument("--high", help="Upper percentile to adjust curves to (0-1).", type=float, default=0.90)
-    parser.add_argument("--pad-low", help="Additional padding below the histogram (0-1).", type=float, default=0.05)
-    parser.add_argument("--pad-high", help="Additional padding above the histogram (0-1).", type=float, default=0.05)
+    parser.add_argument("--low-quantile", help="Lower quantile to adjust curves to (0-1).", type=float, default=0.05)
+    parser.add_argument("--high-quantile", help="Upper quantile to adjust curves to (0-1).", type=float, default=0.95)
+    parser.add_argument("--low-target", help="Target value for pixels at the low quantile (0-1).", type=float, default=0.10)
+    parser.add_argument("--high-target", help="Target value for pixels at the high quantile (0-1).", type=float, default=0.90)
     parser.add_argument("--invert", "-i", help="Invert colors (for negatives).", action="store_true")
     parser.add_argument("--multiprocessing", "-m", help="Use multiple processors.", action="store_true")
     parser.add_argument("--quality", help="Set JPEG quality (0-100).", type=int, default=95)
@@ -86,14 +86,33 @@ def restore(array, args):
 
 def restore_channel(data, args):
     # percentile expects quantile value between 0 and 100
-    low_value = np.percentile(data, args.low*100) - args.pad_low
-    high_value = np.percentile(data, args.high*100) + args.pad_high
+    low_quantile = np.percentile(data, args.low_quantile*100)
+    high_quantile = np.percentile(data, args.high_quantile*100)
 
-    range = high_value - low_value
-    data = (data-low_value)/range
+    sections_x = [0, low_quantile, high_quantile, 1]
+    sections_y = [0, args.low_target, args.high_target, 1]
 
-    # restrain output data to [0, 1] (can become negative otherwise)
-    return np.clip(data, 0, 1)
+    out = apply_section(data, sections_x, sections_y)
+    return np.clip(out, 0, 1)
+
+def apply_section(data, x_points, y_points):
+    assert len(x_points) == len(y_points)
+
+    out = np.zeros_like(data)
+
+    for i in range(len(x_points) - 1):
+        x_start = x_points[i]
+        x_end = x_points[i+1]
+        y_start = y_points[i]
+        y_end = y_points[i+1]
+
+        mask = np.logical_and(data > x_start, data <= x_end)
+
+        slope = (y_end - y_start) / (x_end - x_start)
+        out[mask] = (data[mask] - x_start) * slope + y_start
+
+    return out
+
 
 def compute_out_filename(filename):
     name, ext = os.path.splitext(filename)
