@@ -5,10 +5,10 @@ This script removes color tints from scans of aged negatives or diapositives.
 
 Usage:
 
-    usage: restore.py [-h] [--low LOW] [--high HIGH]
-                                  [--pad-low PAD_LOW] [--pad-high PAD_HIGH]
-                                  [--invert] [--multiprocessing] [--out OUT]
-                                  filename [filename ...]
+    usage: restore.py [-h] [--low LOW] [--high HIGH] [--pad-low PAD_LOW]
+                      [--pad-high PAD_HIGH] [--invert] [--multiprocessing]
+                      [--quality QUALITY] [--out OUT]
+                      filename [filename ...]
 
     Automagically reconstruct scans of old photographs.
 
@@ -21,13 +21,14 @@ Usage:
                             0.1)
       --high HIGH           Upper percentile to adjust curves to (0-1). (default:
                             0.9)
-      --pad-low PAD_LOW     Additional padding below the histogram (0-255).
-                            (default: 20)
-      --pad-high PAD_HIGH   Additional padding above the histogram (0-255).
-                            (default: 30)
+      --pad-low PAD_LOW     Additional padding below the histogram (0-1).
+                            (default: 0.05)
+      --pad-high PAD_HIGH   Additional padding above the histogram (0-1).
+                            (default: 0.05)
       --invert, -i          Invert colors (for negatives). (default: False)
       --multiprocessing, -m
                             Use multiple processors. (default: False)
+      --quality QUALITY     Set JPEG quality (0-100). (default: 95)
       --out OUT, -o OUT     Directory to place reconstructed images into.
                             (default: None)
 
@@ -36,6 +37,7 @@ Dependencies:
 * [Python Pillow Module](https://python-pillow.org/)
 * [NumPy](http://www.numpy.org/)
 * optional: [piexif](https://pypi.python.org/pypi/piexif)
+* optional: [rawpy](https://pypi.python.org/pypi/rawpy)
 
 Examples
 ========

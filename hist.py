@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
+from util import load_image
+
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Plot histogram of color channels.",
@@ -22,14 +24,14 @@ def main():
     plot_histogram(args.filename)
 
 def plot_histogram(filename):
-    image = Image.open(filename)
+    array = load_image(filename)
 
-    channels = image.split()
-    for channel, color in zip(channels, ('red', 'green', 'blue')):
-        data = np.asarray(channel, dtype=np.uint8)
-        plt.hist(data.flatten(), range=(0, 255), histtype='step', bins=255, normed=True, color=color)
+    channels = array.shape[-1]
+    for channel, color in zip(range(channels), ('red', 'green', 'blue')):
+        data = array[:,:,channel]
+        plt.hist(data.flatten(), range=(0, 1), histtype='step', bins=255, normed=True, color=color)
 
-    plt.xlim(0, 255)
+    plt.xlim(0, 1)
     plt.xlabel("Value")
     plt.show()
 

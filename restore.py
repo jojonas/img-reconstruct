@@ -9,6 +9,8 @@ import warnings
 import numpy as np
 from PIL import Image
 
+from util import load_image, save_image
+
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Automagically reconstruct scans of old photographs.",
@@ -17,8 +19,8 @@ def parse_args():
     parser.add_argument("filename", help="File(s) to reconstruct.", nargs="+")
     parser.add_argument("--low", help="Lower percentile to adjust curves to (0-1).", type=float, default=0.10)
     parser.add_argument("--high", help="Upper percentile to adjust curves to (0-1).", type=float, default=0.90)
-    parser.add_argument("--pad-low", help="Additional padding below the histogram (0-255).", type=float, default=20)
-    parser.add_argument("--pad-high", help="Additional padding above the histogram (0-255).", type=float, default=30)
+    parser.add_argument("--pad-low", help="Additional padding below the histogram (0-1).", type=float, default=0.05)
+    parser.add_argument("--pad-high", help="Additional padding above the histogram (0-1).", type=float, default=0.05)
     parser.add_argument("--invert", "-i", help="Invert colors (for negatives).", action="store_true")
     parser.add_argument("--multiprocessing", "-m", help="Use multiple processors.", action="store_true")
     parser.add_argument("--quality", help="Set JPEG quality (0-100).", type=int, default=95)
@@ -50,38 +52,37 @@ def process(params):
 
     print("Processing", filename, "=>", outname)
 
-    image = Image.open(filename)
+    array, info = load_image(filename)
 
-    restored_image = restore(image, args)
+    restored_image = restore(array, args)
 
-    # transfer exif info
-    try:
-        import piexif
-    except ImportError:
-        warnings.warn("Python module 'piexif' is required in order to preserve EXIF information.")
-        exif_bytes = b''
+    if info:
+        # transfer exif info
+        try:
+            import piexif
+        except ImportError:
+            warnings.warn("Python module 'piexif' is required in order to preserve EXIF information.")
+            exif_bytes = b''
+        else:
+            exif_dict = piexif.load(info['exif'])
+            # remove thumbnail from exif info (new appearance)
+            del exif_dict['thumbnail']
+            exif_bytes = piexif.dump(exif_dict)
     else:
-        exif_dict = piexif.load(image.info['exif'])
-        # remove thumbnail from exif info (new appearance)
-        del exif_dict['thumbnail']
-        exif_bytes = piexif.dump(exif_dict)
+        exif_bytes = b''
 
     save_image(outname, restored_image, quality=args.quality, exif=exif_bytes)
 
-    image.close()
-
-def restore(image, args):
-    array = np.array(image, dtype=np.uint8)
-
+def restore(array, args):
     if args.invert:
-        array = 255 - array
+        array = 1 - array
 
     for channel in range(array.shape[-1]):
         data = array[:,:,channel]
         data = restore_channel(data, args)
         array[:,:,channel] = data
 
-    return Image.fromarray(array)
+    return array
 
 def restore_channel(data, args):
     # percentile expects quantile value between 0 and 100
@@ -89,10 +90,10 @@ def restore_channel(data, args):
     high_value = np.percentile(data, args.high*100) + args.pad_high
 
     range = high_value - low_value
-    data = 255*(data-low_value)/range
+    data = (data-low_value)/range
 
-    # restrain output data to [0, 255] (can become negative otherwise)
-    return np.floor(np.clip(data, 0, 255))
+    # restrain output data to [0, 1] (can become negative otherwise)
+    return np.clip(data, 0, 1)
 
 def compute_out_filename(filename):
     name, ext = os.path.splitext(filename)
@@ -103,10 +104,6 @@ def join_out_filename(out, filename):
     if not os.path.exists(out):
         os.makedirs(out)
     return os.path.join(out, os.path.basename(filename))
-
-def save_image(filename, image, **kwargs):
-    assert filename.lower().endswith('.jpg')
-    image.save(filename, format='JPEG', subsampling=0, **kwargs)
 
 if __name__=="__main__":
     main()
