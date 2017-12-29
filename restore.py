@@ -31,11 +31,13 @@ def main():
     if args.multiprocessing:
         pool = multiprocessing.Pool()
         pool.map(process, mp_args)
+        pool.close()
     else:
         for tuple in mp_args:
             process(tuple)
 
 def process(params):
+    # unpack arguments (needed for multiprocessing)
     filename, args = params
 
     if args.out:
@@ -45,7 +47,7 @@ def process(params):
 
     print("Processing", filename, "=>", outname)
 
-    image = load_image(filename)
+    image = Image.open(filename)
 
     restored_image = restore(image, args)
 
@@ -57,6 +59,7 @@ def process(params):
         exif_bytes = b''
     else:
         exif_dict = piexif.load(image.info['exif'])
+        # remove thumbnail from exif info (new appearance)
         del exif_dict['thumbnail']
         exif_bytes = piexif.dump(exif_dict)
 
@@ -64,39 +67,34 @@ def process(params):
 
     image.close()
 
-def plot_histogram(image):
-    import matplotlib.pyplot as plt
-    channels = image.split()
-    for channel, color in zip(channels, ('red', 'green', 'blue')):
-        data = np.asarray(channel, dtype=np.uint8)
-        plt.hist(data.flatten(), range=(0, 255), histtype='step', bins=50, normed=True, color=color)
-    plt.show()
-
-def load_image(filename):
-    return Image.open(filename)
-
 def restore(image, args):
     array = np.array(image, dtype=np.uint8)
+
     if args.invert:
         array = 255 - array
 
     for channel in range(array.shape[-1]):
         data = array[:,:,channel]
-        data = np.floor(255 * restore_channel(data, args))
+        data = restore_channel(data, args)
         array[:,:,channel] = data
 
     return Image.fromarray(array)
 
 def restore_channel(data, args):
+    # percentile expects quantile value between 0 and 100
     low_value = np.percentile(data, args.low*100) - args.pad_low
     high_value = np.percentile(data, args.high*100) + args.pad_high
+
     range = high_value - low_value
-    return np.clip((data-low_value)/range, 0, 1)
+    data = 255*(data-low_value)/range
+
+    # restrain output data to [0, 255] (can become negative otherwise)
+    return np.floor(np.clip(data, 0, 255))
 
 def compute_out_filename(filename):
     name, ext = os.path.splitext(filename)
     name += "_restored"
-    return name + ext
+    return name + ".jpg"
 
 def join_out_filename(out, filename):
     if not os.path.exists(out):
