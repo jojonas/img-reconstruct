@@ -21,6 +21,7 @@ def parse_args():
     parser.add_argument("--pad-high", help="Additional padding above the histogram (0-255).", type=float, default=30)
     parser.add_argument("--invert", "-i", help="Invert colors (for negatives).", action="store_true")
     parser.add_argument("--multiprocessing", "-m", help="Use multiple processors.", action="store_true")
+    parser.add_argument("--quality", help="Set JPEG quality (0-100).", type=int, default=95)
     parser.add_argument("--out", "-o", help="Directory to place reconstructed images into.", default=None)
 
     return parser.parse_args()
@@ -65,7 +66,7 @@ def process(params):
         del exif_dict['thumbnail']
         exif_bytes = piexif.dump(exif_dict)
 
-    save_image(outname, restored_image, quality=95, exif=exif_bytes)
+    save_image(outname, restored_image, quality=args.quality, exif=exif_bytes)
 
     image.close()
 
