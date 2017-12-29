@@ -24,7 +24,7 @@ def main():
     plot_histogram(args.filename)
 
 def plot_histogram(filename):
-    array = load_image(filename)
+    array, _ = load_image(filename)
 
     channels = array.shape[-1]
     for channel, color in zip(range(channels), ('red', 'green', 'blue')):
